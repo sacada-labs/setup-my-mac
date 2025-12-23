@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Setup My Mac - Automate Your MacBook Development Environment</title>
+    <meta name="description" content="Terminal User Interface for automating your MacBook development environment setup. Get all your tools installed in 5 minutes using Homebrew.">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Font with display swap for performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Color Palette - WCAG AA Compliant */
+            --color-blue-400: #60a5fa;
+            --color-blue-500: #3b82f6;
+            --color-blue-600: #2563eb;
+            --color-green-400: #4ade80;
+            --color-green-500: #22c55e;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-400: #9ca3af;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-gray-900: #111827;
+            --color-black: #000000;
+            --color-white: #ffffff;
+            
+            /* Fluid Typography Scale using clamp() */
+            /* Min 14px @ 320px -> Max 16px @ 1200px */
+            --font-size-base: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);
+            /* Min 12px -> Max 14px */
+            --font-size-sm: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+            /* Min 11px -> Max 12px */
+            --font-size-xs: clamp(0.6875rem, 0.65rem + 0.18vw, 0.75rem);
+            
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            
+            /* Large Headings Fluid */
+            --font-size-hero: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
+            
+            /* Spacing Scale - Relative units for fluid layouts */
+            --spacing-1: 0.25rem;
+            --spacing-2: 0.5rem;
+            --spacing-3: 0.75rem;
+            --spacing-4: 1rem;
+            --spacing-6: 1.5rem;
+            --spacing-8: 2rem;
+            --spacing-12: 3rem;
+            --spacing-16: 4rem;
+            
+            /* Touch Target Sizes - WCAG 2.1 AAA Standard (44x44px) */
+            --touch-target-min: 2.75rem; 
+            
+            /* Shadows & Transitions */
+            --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+            --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-2xl: 1rem;
+        }
+
+        /* Sticky Header */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform var(--transition-base);
+        }
+
+        .nav-link {
+            min-height: var(--touch-target-min);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-4);
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-400);
+            text-decoration: none;
+            transition: color var(--transition-base);
+        }
+
+        .nav-link:hover, .nav-link:focus {
+            color: var(--color-white);
+        }
+
+        /* Tooltip style icons */
+        .tool-icon {
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .tool-icon:hover {
+            transform: translateY(-4px) scale(1.1);
+        }
+
+        .tool-icon::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: var(--color-gray-800);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .tool-icon:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--color-white);
+            background-color: var(--color-black);
+            overflow-x: hidden;
+        }
+        
+        .grid-pattern {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* Responsive spacing utilities */
+        .section-padding {
+            padding-top: clamp(4rem, 8vh, 8rem);
+            padding-bottom: clamp(4rem, 8vh, 8rem);
+        }
+
+        @media (max-width: 640px) {
+            .section-padding {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+        }
+        
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: var(--spacing-4);
+            background: var(--color-blue-400);
+            color: var(--color-black);
+            padding: var(--spacing-2) var(--spacing-4);
+            text-decoration: none;
+            z-index: 1000;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            min-height: var(--touch-target-min);
+            display: flex;
+            align-items: center;
+            transition: top var(--transition-fast);
+        }
+        
+        .skip-link:focus {
+            top: var(--spacing-4);
+            outline: 3px solid var(--color-blue-500);
+            outline-offset: 2px;
+        }
+        
+        .grid-pattern {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .glow {
+            box-shadow: var(--shadow-glow);
+            transition: box-shadow var(--transition-slow);
+        }
+        
+        .glow:hover,
+        .glow:focus-within {
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.25);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .glow {
+                box-shadow: none;
+            }
+        }
+        
+        /* Code block styling with better contrast - WCAG AA compliant */
+        .code-block {
+            position: relative;
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid rgba(31, 41, 55, 0.9);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            padding-right: 6rem; /* Make room for copy button */
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-relaxed);
+            color: var(--color-gray-300);
+        }
+        
+        @media (prefers-contrast: high) {
+            .code-block {
+                background: var(--color-gray-900);
+                border: 2px solid var(--color-gray-700);
+                color: var(--color-gray-200);
+            }
+        }
+        
+        .code-line {
+            color: var(--color-gray-300);
+            display: block;
+            margin-top: var(--spacing-3);
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .code-line:first-child {
+            margin-top: 0;
+        }
+        
+        .code-line:focus {
+            outline: 2px solid var(--color-blue-400);
+            outline-offset: 2px;
+            border-radius: var(--radius-sm);
+        }
+        
+        /* Copy button styling - Touch-friendly (44x44px minimum) */
+        .copy-btn {
+            position: absolute;
+            top: var(--spacing-3);
+            right: var(--spacing-3);
+            background: rgba(31, 41, 55, 0.9);
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            color: var(--color-gray-300);
+            padding: var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            min-width: var(--touch-target-min);
+            min-height: var(--touch-target-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-1);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(55, 65, 81, 0.95);
+            border-color: rgba(75, 85, 99, 0.95);
+            color: var(--color-white);
+            transform: translateY(-1px);
+        }
+        
+        .copy-btn:focus,
+        .copy-btn:focus-visible {
+            outline: 3px solid var(--color-blue-400);
+            outline-offset: 2px;
+            background: rgba(55, 65, 81, 0.95);
+        }
+        
+        .copy-btn:active {
+            transform: scale(0.98) translateY(0);
+        }
+        
+        .copy-btn.copied {
+            background: rgba(34, 197, 94, 0.25);
+            border-color: var(--color-green-500);
+            color: var(--color-green-400);
+        }
+        
+        .copy-btn.copied:hover {
+            background: rgba(34, 197, 94, 0.35);
+        }
+        
+        .copy-btn.error {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.6);
+            color: #f87171;
+        }
+        
+        .copy-btn.error:hover {
+            background: rgba(239, 68, 68, 0.35);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .copy-btn {
+                transition: none;
+            }
+            
+            .copy-btn:hover,
+            .copy-btn:active {
+                transform: none;
+            }
+        }
+        
+        /* Improved focus states for accessibility - WCAG compliant */
+        *:focus-visible {
+            outline: 3px solid var(--color-blue-400);
+            outline-offset: 2px;
+            border-radius: var(--radius-sm);
+        }
+        
+        /* Remove default focus outline for mouse users, keep for keyboard */
+        *:focus:not(:focus-visible) {
+            outline: none;
+        }
+        
+        /* Ensure interactive elements are keyboard accessible */
+        a, button, input, textarea, select {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Smooth animations - Respects reduced motion preference */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in {
+                animation: none;
+                opacity: 1;
+            }
+            
+            .loading {
+                animation: none;
+            }
+        }
+        
+        /* Improved list styling - Semantic and accessible */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .feature-list li {
+            position: relative;
+            padding-left: var(--spacing-6);
+            margin-bottom: var(--spacing-3);
+            padding-top: var(--spacing-1);
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: var(--spacing-1);
+            color: var(--color-blue-400);
+            font-weight: 600;
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+        }
+        
+        /* Ensure list items are readable */
+        .feature-list li strong {
+            color: var(--color-gray-300);
+            font-weight: 600;
+        }
+        
+        /* Section dividers for visual separation */
+        .section-divider {
+            border-top: 1px solid rgba(31, 41, 55, 0.8);
+            margin: var(--spacing-8) 0;
+        }
+        
+        @media (min-width: 640px) {
+            .section-divider {
+                margin: var(--spacing-10) 0;
+            }
+        }
+        
+        /* Image lazy loading placeholder with loading state */
+        .image-container {
+            position: relative;
+            background: rgba(17, 24, 39, 0.5);
+            min-height: 200px;
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-zoom-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-zoom-wrapper img {
+            transform: scale(1.15); /* Zoom in to reduce empty padding */
+            transform-origin: center center;
+            transition: transform 0.5s ease, opacity var(--transition-slow);
+        }
+
+        .image-zoom-wrapper img.loaded {
+            opacity: 1;
+        }
+
+        .image-zoom-wrapper:hover img {
+            transform: scale(1.2); /* Slight zoom on hover */
+        }
+        
+        .image-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, 
+                rgba(17, 24, 39, 0.3) 0%, 
+                rgba(31, 41, 55, 0.3) 50%, 
+                rgba(17, 24, 39, 0.3) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            z-index: 1;
+        }
+        
+        .image-container img.loaded ~ .image-container::before {
+            display: none;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .image-container img {
+            opacity: 0;
+            transition: opacity var(--transition-slow);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .image-container img.loaded {
+            opacity: 1;
+        }
+        
+        .image-container img[loading="lazy"] {
+            will-change: opacity;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .image-container::before {
+                animation: none;
+            }
+            
+            .image-container img {
+                transition: none;
+            }
+        }
+        
+        /* Responsive typography - Mobile-first approach */
+        @media (max-width: 640px) {
+            :root {
+                --font-size-xs: 0.6875rem;  /* 11px */
+                --font-size-sm: 0.8125rem;  /* 13px */
+                --font-size-base: 0.9375rem; /* 15px */
+            }
+            
+            .code-block {
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-3);
+                padding-right: 5rem; /* Adjust for smaller button on mobile */
+            }
+            
+            .copy-btn {
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-2);
+                min-width: var(--touch-target-min);
+                min-height: var(--touch-target-min);
+            }
+            
+            /* Ensure touch targets are adequate on mobile */
+            button, a {
+                min-height: var(--touch-target-min);
+                min-width: var(--touch-target-min);
+            }
+        }
+        
+        /* Tablet breakpoint */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .code-block {
+                font-size: var(--font-size-sm);
+            }
+        }
+        
+        /* Large screens */
+        @media (min-width: 1025px) {
+            .code-block {
+                font-size: var(--font-size-base);
+            }
+        }
+        
+        /* High contrast mode support - WCAG AAA */
+        @media (prefers-contrast: high) {
+            .code-block {
+                border-width: 2px;
+                border-color: var(--color-gray-500);
+                background: var(--color-gray-900);
+                color: var(--color-gray-100);
+            }
+            
+            .code-line {
+                color: var(--color-gray-200);
+            }
+            
+            .glow {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            }
+            
+            .copy-btn {
+                border-width: 2px;
+                border-color: var(--color-gray-400);
+            }
+            
+            .feature-list li::before {
+                color: var(--color-blue-500);
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Sticky Header Navigation -->
+    <header class="sticky-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-blue-400 font-bold tracking-tighter text-xl">SM<span class="text-white">M</span></span>
+                <span class="hidden sm:inline-block text-sm font-semibold text-gray-400">Setup My Mac</span>
+            </div>
+            <nav class="flex items-center gap-1" aria-label="Main Navigation">
+                <a href="#main-content" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#install" class="nav-link">Install</a>
+                <a href="https://github.com/gosantos/setup-my-mac" target="_blank" class="nav-link" aria-label="GitHub (opens in new tab)">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 grid-pattern opacity-50" aria-hidden="true"></div>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="relative min-h-screen flex flex-col" role="main" tabindex="-1">
+        <!-- Hero Section -->
+        <section class="section-padding flex items-center justify-center px-4 sm:px-6" aria-labelledby="main-heading">
+            <div class="w-full max-w-7xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Left: Text Content -->
+                    <div class="space-y-8 order-2 lg:order-1 fade-in">
+                        <header class="space-y-6">
+                            <h1 id="main-heading" class="text-[var(--font-size-hero)] font-extrabold leading-[1.1] tracking-tight">
+                                Setup My <span class="text-blue-400">Mac</span>
+                            </h1>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">v1.0.0 Stable</span>
+                                <a href="https://github.com/gosantos/setup-my-mac" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 px-3 py-1 rounded-full text-xs font-medium text-gray-400 transition-colors">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                                    <span>2.4k stars</span>
+                                </a>
+                            </div>
+                        </header>
+                        
+                        <p class="text-xl md:text-2xl text-white font-medium leading-relaxed max-w-xl">
+                            Unbox. Run. Code. Automate your entire MacBook development environment in minutes.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <a href="#install" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                                Start Setup
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </a>
+                            <a href="https://github.com/gosantos/setup-my-mac" target="_blank" class="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-bold border border-gray-800 transition-all flex items-center gap-2">
+                                View Source
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Right: GIF Preview -->
+                    <div class="order-1 lg:order-2 fade-in">
+                        <div class="relative">
+                            <div class="absolute -inset-4 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-[2.5rem] blur-2xl" aria-hidden="true"></div>
+                            <figure class="relative rounded-[2rem] overflow-hidden border border-gray-800 bg-black shadow-2xl glow">
+                                <div class="image-container" role="img" aria-label="Animated demonstration showing the Setup My Mac terminal interface">
+                                    <div class="image-zoom-wrapper">
+                                        <img 
+                                            src="setupmymac-ezgif.com-speed.gif" 
+                                            alt="Terminal demonstration" 
+                                            class="w-full h-auto block"
+                                            fetchpriority="high"
+                                            loading="eager"
+                                            decoding="async"
+                                            width="800"
+                                            height="600"
+                                            onload="handleImageLoad(this)"
+                                            onerror="handleImageError(this)"
+                                        >
+                                    </div>
+                                </div>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section-padding relative overflow-hidden">
+            <!-- Subtle background glow -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[500px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none opacity-50" aria-hidden="true"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24">
+                    <div class="max-w-2xl">
+                        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-blue-500 mb-6">Everything you need</h2>
+                        <h3 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">Built for speed.<br>Designed for developers.</h3>
+                    </div>
+                    <div class="max-w-xs md:text-right">
+                        <p class="text-gray-500 text-lg leading-relaxed">
+                            Skip the manual configuration and get straight to what matters: your code.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-12 lg:gap-24">
+                    <!-- Feature 1 -->
+                    <div class="group">
+                        <div class="mb-8 relative">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-6">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4 text-white group-hover:text-blue-400 transition-colors">Instant Productivity</h4>
+                        <p class="text-gray-400 leading-relaxed text-sm lg:text-base">
+                            Everything happens in the terminal. Automatically installs Homebrew and configures your entire environment in one command.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="group">
+                        <div class="mb-8 relative">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-green-500/10 text-green-400 group-hover:bg-green-500 group-hover:text-white transition-all duration-500 transform group-hover:-rotate-6">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4 text-white group-hover:text-green-400 transition-colors">App Store-less</h4>
+                        <p class="text-gray-400 leading-relaxed text-sm lg:text-base">
+                            Forget the Apple ID. Install Slack, Zoom, and Discord directly from the command line without ever touching the App Store.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="group">
+                        <div class="mb-8 relative">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-12">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4 text-white group-hover:text-purple-400 transition-colors">Full Control</h4>
+                        <p class="text-gray-400 leading-relaxed text-sm lg:text-base">
+                            A curated interactive menu with over 50+ tools. Choose only what you need, from DevOps utilities to your favorite browsers.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-40">
+                    <div class="flex flex-col items-center">
+                        <div class="w-px h-16 bg-gradient-to-b from-transparent to-gray-800 mb-8"></div>
+                        <h5 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.4em] mb-12">Industry Standard Stack</h5>
+                    </div>
+                    <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-12 gap-8 lg:gap-12 items-center opacity-25 hover:opacity-80 transition-opacity duration-700">
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="VS Code"><img src="https://cdn.simpleicons.org/visualstudiocode/white" class="w-6 h-6" alt="VS Code"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Docker"><img src="https://cdn.simpleicons.org/docker/white" class="w-6 h-6" alt="Docker"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="iTerm2"><img src="https://cdn.simpleicons.org/iterm2/white" class="w-6 h-6" alt="iTerm2"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Slack"><img src="https://cdn.simpleicons.org/slack/white" class="w-6 h-6" alt="Slack"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Chrome"><img src="https://cdn.simpleicons.org/googlechrome/white" class="w-6 h-6" alt="Chrome"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Terraform"><img src="https://cdn.simpleicons.org/terraform/white" class="w-6 h-6" alt="Terraform"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="K8s"><img src="https://cdn.simpleicons.org/kubernetes/white" class="w-6 h-6" alt="Kubernetes"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Discord"><img src="https://cdn.simpleicons.org/discord/white" class="w-6 h-6" alt="Discord"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Postman"><img src="https://cdn.simpleicons.org/postman/white" class="w-6 h-6" alt="Postman"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Figma"><img src="https://cdn.simpleicons.org/figma/white" class="w-6 h-6" alt="Figma"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Redis"><img src="https://cdn.simpleicons.org/redis/white" class="w-6 h-6" alt="Redis"></div>
+                        <div class="tool-icon flex justify-center grayscale hover:grayscale-0 transition-all" data-title="Postgres"><img src="https://cdn.simpleicons.org/postgresql/white" class="w-6 h-6" alt="PostgreSQL"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Install Section -->
+        <section id="install" class="section-padding">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to go?</h2>
+                <p class="text-gray-400 mb-12 text-lg">Paste this command into your terminal. No sudo required for the script.</p>
+                
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div class="relative code-block bg-black border border-gray-800 p-6 rounded-2xl text-left">
+                        <button 
+                            class="copy-btn bg-gray-900 hover:bg-gray-800 border-gray-800" 
+                            type="button"
+                            aria-label="Copy installation command"
+                            onclick="copyAllCommands(event)"
+                        >
+                            <span class="copy-text">Copy</span>
+                        </button>
+                        <code class="text-blue-400 block font-mono text-sm sm:text-base break-all pr-12">/bin/bash -c "$(curl -fsSL https://setup-my-mac.com/install.sh)"</code>
+                    </div>
+                </div>
+                
+                <p class="mt-8 text-gray-500 text-sm flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.9L10 1.55l7.834 3.35a1 1 0 01.666.942v4.414c0 4.14-2.615 7.747-6.505 9.07a1 1 0 01-.659 0c-3.89-1.323-6.505-4.93-6.505-9.07V5.842a1 1 0 01.666-.942zM10 14.125a1.125 1.125 0 100-2.25 1.125 1.125 0 000 2.25zM10 4.5l-3.5 1.5v3.5c0 2.375 1.492 4.464 3.5 5.5 2.008-1.036 3.5-3.125 3.5-5.5v-3.5L10 4.5z" clip-rule="evenodd"/></svg>
+                    Secure. Open Source. Verified by the community.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="relative border-t border-gray-900 py-12 px-4 sm:px-6 mt-auto" role="contentinfo">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-2">
+                    <span class="text-blue-400 font-bold tracking-tighter text-xl">SM<span class="text-white">M</span></span>
+                    <span class="text-sm text-gray-500">&copy; <span id="current-year"></span> Setup My Mac. Built for developers.</span>
+                </div>
+                <div class="flex gap-8">
+                    <a href="https://github.com/gosantos/setup-my-mac" class="text-gray-500 hover:text-white transition-colors text-sm font-medium">GitHub</a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors text-sm font-medium">Twitter</a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors text-sm font-medium">Terms</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+    
+    <style>
+        /* Screen reader only class for accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        .sr-only:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: inherit;
+            margin: inherit;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
+    </style>
+    
+    <script>
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Image loading handlers with error handling
+        function handleImageLoad(img) {
+            img.classList.add('loaded');
+            const container = img.closest('.image-container');
+            if (container) {
+                container.classList.remove('loading');
+            }
+        }
+        
+        function handleImageError(img) {
+            console.error('Failed to load image:', img.src);
+            const container = img.closest('.image-container');
+            if (container) {
+                container.innerHTML = '<p class="text-gray-400 text-center p-8">Image failed to load. Please refresh the page.</p>';
+                container.setAttribute('role', 'alert');
+            }
+        }
+        
+        // Copy to clipboard functionality with improved error handling and accessibility
+        function copyAllCommands(event) {
+            // Use event parameter instead of global event
+            const btn = event?.target?.closest('.copy-btn') || document.querySelector('.copy-btn');
+            if (!btn) return;
+            
+            const commands = `/bin/bash -c "$(curl -fsSL https://setup-my-mac.com/install.sh)"`;
+            
+            // Check if clipboard API is available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(commands).then(() => {
+                    showCopySuccess(btn);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    // Fallback for clipboard API failure
+                    fallbackCopy(commands, btn);
+                });
+            } else {
+                // Fallback for older browsers
+                fallbackCopy(commands, btn);
+            }
+        }
+        
+        function showCopySuccess(btn) {
+            const copyText = btn.querySelector('.copy-text');
+            const originalText = copyText.textContent;
+            const originalAriaLabel = btn.getAttribute('aria-label');
+            
+            copyText.textContent = 'Copied!';
+            btn.setAttribute('aria-label', 'Commands copied to clipboard');
+            btn.classList.add('copied');
+            
+            // Announce to screen readers
+            announceToScreenReader('Commands copied to clipboard');
+            
+            setTimeout(() => {
+                copyText.textContent = originalText;
+                btn.setAttribute('aria-label', originalAriaLabel);
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+        
+        function fallbackCopy(commands, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = commands;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            textarea.style.pointerEvents = 'none';
+            textarea.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(textarea);
+            
+            try {
+                textarea.select();
+                textarea.setSelectionRange(0, commands.length);
+                const successful = document.execCommand('copy');
+                
+                if (successful) {
+                    showCopySuccess(btn);
+                } else {
+                    showCopyError(btn);
+                }
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                showCopyError(btn);
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+        
+        function showCopyError(btn) {
+            const copyText = btn.querySelector('.copy-text');
+            const originalText = copyText.textContent;
+            
+            copyText.textContent = 'Error';
+            btn.classList.add('error');
+            announceToScreenReader('Failed to copy commands. Please select and copy manually.');
+            
+            setTimeout(() => {
+                copyText.textContent = originalText;
+                btn.classList.remove('error');
+            }, 2000);
+        }
+        
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+        
+        // Enhanced keyboard navigation and accessibility
+        document.addEventListener('DOMContentLoaded', () => {
+            // Focus management for skip link
+            const skipLink = document.querySelector('.skip-link');
+            const mainContent = document.getElementById('main-content');
+            
+            if (skipLink && mainContent) {
+                skipLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    mainContent.focus();
+                    mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+            
+            // Keyboard navigation for copy button (already handled by button element)
+            const copyBtn = document.querySelector('.copy-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        copyBtn.click();
+                    }
+                });
+            }
+            
+            // Ensure all interactive elements are keyboard accessible
+            const interactiveElements = document.querySelectorAll('a, button, [tabindex]');
+            interactiveElements.forEach(el => {
+                if (!el.hasAttribute('tabindex') && el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+                    el.setAttribute('tabindex', '0');
+                }
+            });
+        });
+        
+        // Enhanced lazy loading with intersection observer for better performance
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const container = img.closest('.image-container');
+                        
+                        if (container) {
+                            container.classList.add('loading');
+                        }
+                        
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                        }
+                        
+                        // If image is already loaded (cached), handle it
+                        if (img.complete && img.naturalHeight !== 0) {
+                            handleImageLoad(img);
+                        }
+                        
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px' // Start loading slightly before image enters viewport
+            });
+            
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+        
+        // Accessibility: Handle scroll spy for active nav links
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-blue-400');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('text-blue-400');
+                }
+            });
+        });
+
+        // Performance monitoring (optional, can be removed in production)
+        if ('PerformanceObserver' in window) {
+            try {
+                const perfObserver = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (entry.entryType === 'largest-contentful-paint') {
+                            console.log('LCP:', entry.renderTime || entry.loadTime);
+                        }
+                        if (entry.entryType === 'first-input') {
+                            console.log('FID:', entry.processingStart - entry.startTime);
+                        }
+                    }
+                });
+                perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
+            } catch (e) {
+                // PerformanceObserver not supported or error
+            }
+        }
+    </script>
+</body>
+</html>
+

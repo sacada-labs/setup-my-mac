@@ -1,0 +1,27 @@
+{
+  "name": "tui",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run index.ts --watch",
+    "build": "bun build index.ts --target bun --compile --minify --outfile setup && chmod +x setup && rm -f .*.bun-build *.bun-build",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write ."
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "zod": "^4.2.1",
+    "inquirer": "^10.0.0",
+    "kleur": "^4.1.5",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest",
+    "@types/inquirer": "^9.0.7"
+  }
+}
