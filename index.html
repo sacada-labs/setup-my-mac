@@ -794,7 +794,7 @@
                         >
                             <span class="copy-text">Copy</span>
                         </button>
-                        <code class="text-blue-400 block font-mono text-sm sm:text-base break-all pr-12">/bin/bash -c "$(curl -fsSL https://setup-my-mac.com/install.sh)"</code>
+                        <code class="text-blue-400 block font-mono text-sm sm:text-base break-all pr-12">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sacada-labs/setup-my-mac/refs/heads/main/run.sh)"</code>
                     </div>
                 </div>
                 
@@ -875,20 +875,20 @@
             const btn = event?.target?.closest('.copy-btn') || document.querySelector('.copy-btn');
             if (!btn) return;
             
-            const commands = `/bin/bash -c "$(curl -fsSL https://setup-my-mac.com/install.sh)"`;
+            const command = `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sacada-labs/setup-my-mac/refs/heads/main/run.sh)"`;
             
             // Check if clipboard API is available
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(commands).then(() => {
+                navigator.clipboard.writeText(command).then(() => {
                     showCopySuccess(btn);
                 }).catch(err => {
                     console.error('Failed to copy:', err);
                     // Fallback for clipboard API failure
-                    fallbackCopy(commands, btn);
+                    fallbackCopy(command, btn);
                 });
             } else {
                 // Fallback for older browsers
-                fallbackCopy(commands, btn);
+                fallbackCopy(command, btn);
             }
         }
         
@@ -898,11 +898,11 @@
             const originalAriaLabel = btn.getAttribute('aria-label');
             
             copyText.textContent = 'Copied!';
-            btn.setAttribute('aria-label', 'Commands copied to clipboard');
+            btn.setAttribute('aria-label', 'Installation command copied to clipboard');
             btn.classList.add('copied');
             
             // Announce to screen readers
-            announceToScreenReader('Commands copied to clipboard');
+            announceToScreenReader('Installation command copied to clipboard');
             
             setTimeout(() => {
                 copyText.textContent = originalText;
@@ -911,9 +911,9 @@
             }, 2000);
         }
         
-        function fallbackCopy(commands, btn) {
+        function fallbackCopy(command, btn) {
             const textarea = document.createElement('textarea');
-            textarea.value = commands;
+            textarea.value = command;
             textarea.style.position = 'fixed';
             textarea.style.opacity = '0';
             textarea.style.pointerEvents = 'none';
@@ -922,7 +922,7 @@
             
             try {
                 textarea.select();
-                textarea.setSelectionRange(0, commands.length);
+                textarea.setSelectionRange(0, command.length);
                 const successful = document.execCommand('copy');
                 
                 if (successful) {
@@ -944,7 +944,7 @@
             
             copyText.textContent = 'Error';
             btn.classList.add('error');
-            announceToScreenReader('Failed to copy commands. Please select and copy manually.');
+            announceToScreenReader('Failed to copy installation command. Please select and copy manually.');
             
             setTimeout(() => {
                 copyText.textContent = originalText;
