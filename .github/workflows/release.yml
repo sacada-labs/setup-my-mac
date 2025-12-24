@@ -1,71 +1,56 @@
-name: Build and Release
+name: Release
 
 on:
   push:
-    tags:
-      - 'v*'  # Triggers on version tags like v1.0.0
-  workflow_dispatch:  # Allows manual triggering
+    branches:
+      - main
 
 jobs:
-  build-and-release:
+  release:
     runs-on: macos-latest
     permissions:
-      contents: write  # Required to create releases
+      contents: write
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
+      
       - name: Install dependencies
         run: bun install
-
+      
       - name: Build executable
         run: bun run build
-
-      - name: Sign executable
+      
+      - name: Generate release tag
+        id: tag
         run: |
-          # Sign with ad-hoc signature to help macOS Gatekeeper
-          codesign --sign - --force --deep setup
-          codesign --verify --verbose setup
-
-      - name: Get version from tag
-        id: get_version
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-          else
-            echo "version=dev-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create checksum
-        run: |
-          shasum -a 256 setup > setup.sha256
-
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          TAG="v${TIMESTAMP}-${SHORT_SHA}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Generated tag: $TAG"
+      
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
+          body: |
+            Automated release created from commit ${{ github.sha }}
+            
+            **Changes:**
+            ${{ github.event.head_commit.message }}
+            
+            **Executable:**
+            - `setup` - Standalone executable for macOS
           files: |
             setup
-            setup.sha256
-          name: Release ${{ steps.get_version.outputs.version }}
-          body: |
-            ## MacBook Setup TUI ${{ steps.get_version.outputs.version }}
-            
-            ### Installation
-            
-            1. Download `setup`
-            2. Make executable: `chmod +x setup`
-            3. Run: `xattr -d com.apple.quarantine setup && ./setup`
-            
-            ### Checksum
-            
-            Verify the download:
-            `shasum -a 256 -c setup.sha256`
-            
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
