@@ -48,13 +48,6 @@ export const tools: Tool[] = [
     description: "File download utility",
   },
   {
-    name: "curl",
-    package: "curl",
-    type: "formula",
-    category: "Utilities",
-    description: "Command-line tool for transferring data",
-  },
-  {
     name: "jq",
     package: "jq",
     type: "formula",
@@ -195,6 +188,13 @@ export const tools: Tool[] = [
     category: "Development Tools",
     description: "Hyperextensible Vim-based text editor",
   },
+  {
+    name: "Tmux",
+    package: "tmux",
+    type: "formula",
+    category: "Development Tools",
+    description: "Terminal multiplexer",
+  },
 
   // Casks - Development Tools
   {
@@ -225,6 +225,20 @@ export const tools: Tool[] = [
     category: "Development Tools",
     description: "Terminal emulator",
   },
+  {
+    name: "Insomnia",
+    package: "insomnia",
+    type: "cask",
+    category: "Development Tools",
+    description: "API client and design platform",
+  },
+  {
+    name: "OrbStack",
+    package: "orbstack",
+    type: "cask",
+    category: "Development Tools",
+    description: "Docker Desktop alternative for macOS",
+  },
 
   // Casks - Misc
   {
@@ -240,6 +254,13 @@ export const tools: Tool[] = [
     type: "cask",
     category: "Misc",
     description: "Music streaming service",
+  },
+  {
+    name: "Google Drive",
+    package: "google-drive",
+    type: "cask",
+    category: "Misc",
+    description: "Cloud storage and file synchronization",
   },
 ];
 
