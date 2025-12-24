@@ -141,7 +141,7 @@ async function main() {
     // Try to install Homebrew
     const brewResult = await ensureHomebrew(false);
     if (!brewResult.success) {
-      console.log(kleur.cyan().bold("\n🍺 MacBook Setup TUI\n"));
+      console.log(kleur.cyan().bold("\n🍺 Setup My Mac\n"));
       console.log(kleur.gray("This tool will help you install development tools via Homebrew.\n"));
       console.log(kleur.red(`✗ Failed to install Homebrew: ${brewResult.error}`));
       console.log(kleur.yellow("\nPlease install Homebrew manually and try again:"));
