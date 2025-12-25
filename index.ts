@@ -171,8 +171,8 @@ async function main() {
 `)
   );
 
-  console.log(kleur.gray("Setup My Mac will help you install your favorite tools and apps via Homebrew."));
-  console.log(kleur.gray("It works both with formulae and casks, so you can install both types of packages."));
+  console.log(kleur.gray("Setup My Mac will help you install your favorite apps and utilities via Homebrew."));
+  console.log(kleur.gray("It works both with formulae and casks, so you can install all types of packages."));
   console.log(
     kleur.gray(`They will be displayed in ${categories.length} categories to select from.\n`)
   );
