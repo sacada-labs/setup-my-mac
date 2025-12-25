@@ -208,7 +208,7 @@ async function main() {
   // Step 3: Go through all categories with back navigation support
   const categorizedTools = getToolsByCategory();
   const categorySelections: Record<string, Tool[]> = {};
-  const TOOLS_PER_PAGE = 8;
+  const TOOLS_PER_PAGE = 20;
 
   let i = 0;
   while (i < categories.length) {
