@@ -181,11 +181,32 @@ const tools: Tool[] = [
 		description: "Team collaboration and video conferencing",
 	},
 	{
+		name: "1Password",
+		package: "1password",
+		type: "cask",
+		category: "Productivity",
+		description: "Password manager",
+	},
+	{
+		name: "Bitwarden",
+		package: "bitwarden",
+		type: "cask",
+		category: "Productivity",
+		description: "Password manager",
+	},
+	{
 		name: "Notion",
 		package: "notion",
 		type: "cask",
 		category: "Productivity",
 		description: "All-in-one workspace",
+	},
+	{
+		name: "Obsidian",
+		package: "obsidian",
+		type: "cask",
+		category: "Productivity",
+		description: "Knowledge base and note-taking app",
 	},
 	{
 		name: "Slack",
@@ -218,11 +239,25 @@ const tools: Tool[] = [
 
 	// System & Utilities - System-level utilities and command-line tools
 	{
+		name: "Caffeine",
+		package: "caffeine",
+		type: "cask",
+		category: "System & Utilities",
+		description: "Prevent your Mac from automatically sleeping",
+	},
+	{
 		name: "htop",
 		package: "htop",
 		type: "formula",
 		category: "System & Utilities",
 		description: "Interactive process viewer",
+	},
+	{
+		name: "Rectangle",
+		package: "rectangle",
+		type: "cask",
+		category: "System & Utilities",
+		description: "Window manager",
 	},
 	{
 		name: "jq",
