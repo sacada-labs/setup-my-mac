@@ -157,18 +157,38 @@ async function main() {
 
   // Step 2: Display all intro text at once, then prompt to continue
   clearScreen();
-  console.log(kleur.cyan().bold("\n🍺 MacBook Setup TUI\n"));
-  console.log(kleur.gray("This tool will help you install development tools via Homebrew.\n"));
-  console.log(kleur.gray("All tools will be installed using Homebrew (formulae and casks).\n"));
+  console.log(
+    kleur.cyan().bold(`
+╔═══════════════════════════════════════╗
+║                                       ║
+║    ███████  ███    ███  ███    ███    ║
+║    ██       ████  ████  ████  ████    ║
+║    ███████  ██ ████ ██  ██ ████ ██    ║
+║         ██  ██  ██  ██  ██  ██  ██    ║
+║    ███████  ██      ██  ██      ██    ║
+║                                       ║
+╚═══════════════════════════════════════╝
+`)
+  );
+
+  console.log(kleur.gray("Setup My Mac will help you install your favorite tools and apps via Homebrew."));
+  console.log(kleur.gray("It works both with formulae and casks, so you can install both types of packages."));
+  console.log(
+    kleur.gray(`They will be displayed in ${categories.length} categories to select from.\n`)
+  );
+
+  
   console.log(homebrewStatus);
   console.log(
-    kleur.yellow(
-      "\n⚠ Warning: Some tools might require sudo privileges during installation.\n" +
-        "   If prompted for a password, you'll see a clear notification and can enter it directly.\n"
+    kleur.yellow().bold(
+      "\n┌───────────────────────────────────────────────────────────┐\n" +
+        "│  ⚠  Warning                                               │\n" +
+        "│                                                           │\n" +
+        "│  Some tools may require sudo privileges.                  │\n" +
+        "│  If prompted for your password, you'll see a clear        │\n" +
+        "│  notification and can enter it directly in your terminal. │\n" +
+        "└───────────────────────────────────────────────────────────┘\n"
     )
-  );
-  console.log(
-    kleur.gray(`You'll be shown ${categories.length} categories. Select tools from each one.\n`)
   );
 
   // Wait for Enter or 'q' keypress
