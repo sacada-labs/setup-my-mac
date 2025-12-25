@@ -127,30 +127,33 @@
         }
         
         .marquee-item.tool-icon::after {
-            content: attr(data-title);
-            position: absolute;
-            bottom: calc(100% + 16px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(31, 41, 55, 0.98);
+            display: none;
+        }
+        
+        .tooltip {
+            position: fixed;
+            background: rgba(17, 24, 39, 0.98);
             color: white;
             padding: 8px 14px;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease, transform 0.2s ease;
             white-space: nowrap;
-            z-index: 10000;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+            z-index: 100000;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            transform: translateX(-50%) translateY(-100%);
+            margin-top: -8px;
+            left: 0;
+            top: 0;
         }
-
-        .marquee-item.tool-icon:hover::after {
+        
+        .tooltip.visible {
             opacity: 1;
-            transform: translateX(-50%) translateY(-4px);
         }
         
         html {
@@ -1217,6 +1220,67 @@
                 if (!el.hasAttribute('tabindex') && el.tagName !== 'BUTTON' && el.tagName !== 'A') {
                     el.setAttribute('tabindex', '0');
                 }
+            });
+            
+            // Dynamic tooltip system for marquee icons
+            let tooltip = null;
+            const toolIcons = document.querySelectorAll('.marquee-item.tool-icon');
+            
+            function createTooltip() {
+                if (!tooltip) {
+                    tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    document.body.appendChild(tooltip);
+                }
+                return tooltip;
+            }
+            
+            function showTooltip(element, text) {
+                const tip = createTooltip();
+                tip.textContent = text;
+                
+                const rect = element.getBoundingClientRect();
+                
+                // Position above the icon, centered horizontally
+                tip.style.left = (rect.left + rect.width / 2) + 'px';
+                tip.style.top = (rect.top - 8) + 'px';
+                
+                // Force reflow to get actual dimensions
+                tip.style.visibility = 'hidden';
+                tip.classList.add('visible');
+                const tipRect = tip.getBoundingClientRect();
+                tip.style.visibility = 'visible';
+                
+                // Adjust position to account for tooltip height
+                tip.style.top = (rect.top - tipRect.height - 8) + 'px';
+            }
+            
+            function hideTooltip() {
+                if (tooltip) {
+                    tooltip.classList.remove('visible');
+                }
+            }
+            
+            toolIcons.forEach(icon => {
+                const title = icon.getAttribute('data-title');
+                if (!title) return;
+                
+                icon.addEventListener('mouseenter', (e) => {
+                    showTooltip(e.currentTarget, title);
+                });
+                
+                icon.addEventListener('mouseleave', () => {
+                    hideTooltip();
+                });
+                
+                icon.addEventListener('mousemove', (e) => {
+                    if (tooltip && tooltip.classList.contains('visible')) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const tipRect = tooltip.getBoundingClientRect();
+                        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                        tooltip.style.top = (rect.top - tipRect.height - 8) + 'px';
+                    }
+                });
             });
         });
         
