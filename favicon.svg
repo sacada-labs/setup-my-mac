@@ -1,0 +1,8 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="40" fill="#000000"/>
+  <text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="90" letter-spacing="-2">
+    <tspan fill="#4A89F7">S</tspan>
+    <tspan fill="#4A89F7">M</tspan>
+    <tspan fill="#FFFFFF">M</tspan>
+  </text>
+</svg>
