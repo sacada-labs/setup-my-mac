@@ -1,4 +1,4 @@
-export type ToolType = "formula" | "cask";
+type ToolType = "formula" | "cask";
 
 export interface Tool {
 	name: string;
@@ -8,7 +8,7 @@ export interface Tool {
 	description?: string;
 }
 
-export const tools: Tool[] = [
+const tools: Tool[] = [
 	// Development - All development tools, editors, IDEs, language managers, and dev utilities
 	{
 		name: "AWS CLI",
