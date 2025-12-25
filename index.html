@@ -1102,24 +1102,6 @@
         yearElement.textContent = currentYear;
         yearElement.setAttribute('datetime', currentYear.toString());
         
-        // Image loading handlers with error handling
-        function _handleImageLoad(img) {
-            img.classList.add('loaded');
-            const container = img.closest('.image-container');
-            if (container) {
-                container.classList.remove('loading');
-            }
-        }
-        
-        function _handleImageError(img) {
-            console.error('Failed to load image:', img.src);
-            const container = img.closest('.image-container');
-            if (container) {
-                container.innerHTML = '<p class="text-gray-400 text-center p-8">Image failed to load. Please refresh the page.</p>';
-                container.setAttribute('role', 'alert');
-            }
-        }
-        
         // Copy to clipboard functionality with improved error handling and accessibility
         function _copyAllCommands(event) {
             // Use event parameter to find the button
