@@ -457,55 +457,45 @@
             }
         }
         
-        /* Image lazy loading placeholder with loading state */
+        /* Image container - Optimized for performance and CLS prevention */
         .image-container {
             position: relative;
-            background: rgba(17, 24, 39, 0.5);
-            min-height: 200px;
+            background: transparent;
             border-radius: var(--radius-2xl);
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
         }
         
-        .image-zoom-wrapper {
+        .image-container img {
+            opacity: 0;
+            transition: opacity 0.6s ease-out;
+            position: relative;
+            display: block;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: auto;
         }
-
-        .image-zoom-wrapper img {
-            transform: scale(1.15); /* Zoom in to reduce empty padding */
-            transform-origin: center center;
-            transition: transform 0.5s ease, opacity var(--transition-slow);
-        }
-
-        .image-zoom-wrapper img.loaded {
+        
+        .image-container img.loaded {
             opacity: 1;
         }
-
-        .image-zoom-wrapper:hover img {
-            transform: scale(1.2); /* Slight zoom on hover */
-        }
         
+        /* Loading placeholder - subtle shimmer effect */
         .image-container::before {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(90deg, 
-                rgba(17, 24, 39, 0.3) 0%, 
+                rgba(17, 24, 39, 0.2) 0%, 
                 rgba(31, 41, 55, 0.3) 50%, 
-                rgba(17, 24, 39, 0.3) 100%);
+                rgba(17, 24, 39, 0.2) 100%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             z-index: 1;
+            pointer-events: none;
         }
         
-        .image-container img.loaded ~ .image-container::before {
+        .image-container img.loaded ~ .image-container::before,
+        .image-container img.loaded + .image-container::before {
             display: none;
         }
         
@@ -518,19 +508,14 @@
             }
         }
         
-        .image-container img {
-            opacity: 0;
-            transition: opacity var(--transition-slow);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .image-container img.loaded {
-            opacity: 1;
-        }
-        
-        .image-container img[loading="lazy"] {
-            will-change: opacity;
+        @media (prefers-reduced-motion: reduce) {
+            .image-container::before {
+                animation: none;
+            }
+            
+            .image-container img {
+                transition: none;
+            }
         }
 
         /* Infinite Marquee Animation */
@@ -892,15 +877,19 @@
 
                     <!-- Terminal Preview Image -->
                     <div class="pt-12 w-full max-w-5xl mx-auto">
-                        <div class="relative rounded-3xl overflow-hidden border border-white/5 bg-gray-950/50 backdrop-blur-sm shadow-[0_0_100px_rgba(59,130,246,0.1)]">
+                        <div class="relative rounded-3xl overflow-hidden border border-white/5 bg-gray-950/50 backdrop-blur-sm shadow-[0_0_100px_rgba(59,130,246,0.1)]" role="img" aria-label="Terminal demonstration showing Setup My Mac interface">
                             <div class="image-container">
                                 <img 
                                     src="image.png" 
-                                    alt="Terminal demonstration showing Setup My Mac interface" 
-                                    class="w-full h-auto opacity-0 transition-opacity duration-1000"
+                                    alt="Terminal demonstration showing Setup My Mac interface with tool selection menu" 
+                                    class="w-full h-auto"
                                     fetchpriority="high"
                                     loading="eager"
+                                    width="1200"
+                                    height="800"
+                                    decoding="async"
                                     onload="this.classList.add('loaded')"
+                                    onerror="this.alt='Image failed to load. Please refresh the page.'; this.classList.add('loaded')"
                                 />
                             </div>
                         </div>
@@ -967,28 +956,28 @@
                         <div class="marquee-container">
                             <div class="marquee-content">
                                 <!-- First set of icons - 10 most common tools with verified icons -->
-                                <div class="marquee-item tool-icon" data-title="Cursor"><img src="https://cdn.simpleicons.org/cursor/white" class="w-8 h-8" alt="Cursor"></div>
-                                <div class="marquee-item tool-icon" data-title="IntelliJ IDEA"><img src="https://cdn.simpleicons.org/intellijidea/white" class="w-8 h-8" alt="IntelliJ IDEA"></div>
-                                <div class="marquee-item tool-icon" data-title="Discord"><img src="https://cdn.simpleicons.org/discord/white" class="w-8 h-8" alt="Discord"></div>
-                                <div class="marquee-item tool-icon" data-title="Google Chrome"><img src="https://cdn.simpleicons.org/googlechrome/white" class="w-8 h-8" alt="Google Chrome"></div>
-                                <div class="marquee-item tool-icon" data-title="Firefox"><img src="https://cdn.simpleicons.org/firefoxbrowser/white" class="w-8 h-8" alt="Firefox"></div>
-                                <div class="marquee-item tool-icon" data-title="Neovim"><img src="https://cdn.simpleicons.org/neovim/white" class="w-8 h-8" alt="Neovim"></div>
-                                <div class="marquee-item tool-icon" data-title="Spotify"><img src="https://cdn.simpleicons.org/spotify/white" class="w-8 h-8" alt="Spotify"></div>
-                                <div class="marquee-item tool-icon" data-title="Notion"><img src="https://cdn.simpleicons.org/notion/white" class="w-8 h-8" alt="Notion"></div>
-                                <div class="marquee-item tool-icon" data-title="Zoom"><img src="https://cdn.simpleicons.org/zoom/white" class="w-8 h-8" alt="Zoom"></div>
-                                <div class="marquee-item tool-icon" data-title="WhatsApp"><img src="https://cdn.simpleicons.org/whatsapp/white" class="w-8 h-8" alt="WhatsApp"></div>
+                                <div class="marquee-item tool-icon" data-title="Cursor"><img src="https://cdn.simpleicons.org/cursor/white" class="w-8 h-8" alt="Cursor" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="IntelliJ IDEA"><img src="https://cdn.simpleicons.org/intellijidea/white" class="w-8 h-8" alt="IntelliJ IDEA" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Discord"><img src="https://cdn.simpleicons.org/discord/white" class="w-8 h-8" alt="Discord" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Google Chrome"><img src="https://cdn.simpleicons.org/googlechrome/white" class="w-8 h-8" alt="Google Chrome" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Firefox"><img src="https://cdn.simpleicons.org/firefoxbrowser/white" class="w-8 h-8" alt="Firefox" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Neovim"><img src="https://cdn.simpleicons.org/neovim/white" class="w-8 h-8" alt="Neovim" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Spotify"><img src="https://cdn.simpleicons.org/spotify/white" class="w-8 h-8" alt="Spotify" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Notion"><img src="https://cdn.simpleicons.org/notion/white" class="w-8 h-8" alt="Notion" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Zoom"><img src="https://cdn.simpleicons.org/zoom/white" class="w-8 h-8" alt="Zoom" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="WhatsApp"><img src="https://cdn.simpleicons.org/whatsapp/white" class="w-8 h-8" alt="WhatsApp" width="32" height="32" loading="lazy"></div>
                                 
                                 <!-- Second identical set for seamless loop -->
-                                <div class="marquee-item tool-icon" data-title="Cursor"><img src="https://cdn.simpleicons.org/cursor/white" class="w-8 h-8" alt="Cursor"></div>
-                                <div class="marquee-item tool-icon" data-title="IntelliJ IDEA"><img src="https://cdn.simpleicons.org/intellijidea/white" class="w-8 h-8" alt="IntelliJ IDEA"></div>
-                                <div class="marquee-item tool-icon" data-title="Discord"><img src="https://cdn.simpleicons.org/discord/white" class="w-8 h-8" alt="Discord"></div>
-                                <div class="marquee-item tool-icon" data-title="Google Chrome"><img src="https://cdn.simpleicons.org/googlechrome/white" class="w-8 h-8" alt="Google Chrome"></div>
-                                <div class="marquee-item tool-icon" data-title="Firefox"><img src="https://cdn.simpleicons.org/firefoxbrowser/white" class="w-8 h-8" alt="Firefox"></div>
-                                <div class="marquee-item tool-icon" data-title="Neovim"><img src="https://cdn.simpleicons.org/neovim/white" class="w-8 h-8" alt="Neovim"></div>
-                                <div class="marquee-item tool-icon" data-title="Spotify"><img src="https://cdn.simpleicons.org/spotify/white" class="w-8 h-8" alt="Spotify"></div>
-                                <div class="marquee-item tool-icon" data-title="Notion"><img src="https://cdn.simpleicons.org/notion/white" class="w-8 h-8" alt="Notion"></div>
-                                <div class="marquee-item tool-icon" data-title="Zoom"><img src="https://cdn.simpleicons.org/zoom/white" class="w-8 h-8" alt="Zoom"></div>
-                                <div class="marquee-item tool-icon" data-title="WhatsApp"><img src="https://cdn.simpleicons.org/whatsapp/white" class="w-8 h-8" alt="WhatsApp"></div>
+                                <div class="marquee-item tool-icon" data-title="Cursor"><img src="https://cdn.simpleicons.org/cursor/white" class="w-8 h-8" alt="Cursor" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="IntelliJ IDEA"><img src="https://cdn.simpleicons.org/intellijidea/white" class="w-8 h-8" alt="IntelliJ IDEA" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Discord"><img src="https://cdn.simpleicons.org/discord/white" class="w-8 h-8" alt="Discord" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Google Chrome"><img src="https://cdn.simpleicons.org/googlechrome/white" class="w-8 h-8" alt="Google Chrome" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Firefox"><img src="https://cdn.simpleicons.org/firefoxbrowser/white" class="w-8 h-8" alt="Firefox" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Neovim"><img src="https://cdn.simpleicons.org/neovim/white" class="w-8 h-8" alt="Neovim" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Spotify"><img src="https://cdn.simpleicons.org/spotify/white" class="w-8 h-8" alt="Spotify" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Notion"><img src="https://cdn.simpleicons.org/notion/white" class="w-8 h-8" alt="Notion" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="Zoom"><img src="https://cdn.simpleicons.org/zoom/white" class="w-8 h-8" alt="Zoom" width="32" height="32" loading="lazy"></div>
+                                <div class="marquee-item tool-icon" data-title="WhatsApp"><img src="https://cdn.simpleicons.org/whatsapp/white" class="w-8 h-8" alt="WhatsApp" width="32" height="32" loading="lazy"></div>
                             </div>
                         </div>
                         </div>
@@ -1024,7 +1013,7 @@
                             </button>
                         </div>
                         <div class="terminal-body">
-                            <code class="terminal-command">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sacada-labs/setup-my-mac/refs/heads/main/run.sh)"</code>
+                            <code class="terminal-command" aria-label="Installation command">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sacada-labs/setup-my-mac/refs/heads/main/run.sh)"</code>
                         </div>
                     </div>
                     
