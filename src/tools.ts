@@ -9,37 +9,35 @@ export interface Tool {
 }
 
 export const tools: Tool[] = [
-  // Formulae - DevOps
+  // Formulae - Utilities
   {
     name: "kubectl",
     package: "kubectl",
     type: "formula",
-    category: "DevOps",
+    category: "Utilities",
     description: "Kubernetes command-line tool",
   },
   {
     name: "Terraform",
     package: "terraform",
     type: "formula",
-    category: "DevOps",
+    category: "Utilities",
     description: "Infrastructure as code tool",
   },
   {
     name: "AWS CLI",
     package: "awscli",
     type: "formula",
-    category: "DevOps",
+    category: "Utilities",
     description: "Amazon Web Services command-line interface",
   },
   {
     name: "k9s",
     package: "k9s",
     type: "formula",
-    category: "DevOps",
+    category: "Utilities",
     description: "Kubernetes CLI to manage clusters",
   },
-
-  // Formulae - Utilities
   {
     name: "wget",
     package: "wget",
@@ -68,55 +66,71 @@ export const tools: Tool[] = [
     category: "Utilities",
     description: "Interactive process viewer",
   },
+  {
+    name: "Tmux",
+    package: "tmux",
+    type: "formula",
+    category: "Utilities",
+    description: "Terminal multiplexer",
+  },
 
-  // Formulae - Version Managers
+  // Casks - Utilities
+  {
+    name: "OrbStack",
+    package: "orbstack",
+    type: "cask",
+    category: "Utilities",
+    description: "Docker Desktop alternative for macOS",
+  },
+  {
+    name: "Insomnia",
+    package: "insomnia",
+    type: "cask",
+    category: "Utilities",
+    description: "API client and design platform",
+  },
+
+  // Formulae - Language Version Managers
   {
     name: "nvm",
     package: "nvm",
     type: "formula",
-    category: "Version Managers",
+    category: "Language Version Managers",
     description: "Node Version Manager",
   },
   {
-    name: "pyenv",
-    package: "pyenv",
+    name: "uv",
+    package: "uv",
     type: "formula",
-    category: "Version Managers",
-    description: "Python version management",
+    category: "Language Version Managers",
+    description: "Python package installer and resolver",
   },
   {
     name: "rbenv",
     package: "rbenv",
     type: "formula",
-    category: "Version Managers",
+    category: "Language Version Managers",
     description: "Ruby version management",
   },
   {
     name: "rustup",
     package: "rustup-init",
     type: "formula",
-    category: "Version Managers",
+    category: "Language Version Managers",
     description: "Rust toolchain installer and version manager",
   },
   {
     name: "jenv",
     package: "jenv",
     type: "formula",
-    category: "Version Managers",
+    category: "Language Version Managers",
     description: "Java environment manager",
-  },
-  {
-    name: "asdf",
-    package: "asdf",
-    type: "formula",
-    category: "Version Managers",
-    description: "Extendable version manager supporting multiple languages",
   },
   {
     name: "gvm",
     package: "gvm",
     type: "formula",
-    category: "Version Managers",
+    category: "Language Version Managers",
     description: "Go version manager",
   },
 
@@ -195,13 +209,6 @@ export const tools: Tool[] = [
     category: "Development Tools",
     description: "Hyperextensible Vim-based text editor",
   },
-  {
-    name: "Tmux",
-    package: "tmux",
-    type: "formula",
-    category: "Development Tools",
-    description: "Terminal multiplexer",
-  },
 
   // Casks - Development Tools
   {
@@ -231,20 +238,6 @@ export const tools: Tool[] = [
     type: "cask",
     category: "Development Tools",
     description: "Terminal emulator",
-  },
-  {
-    name: "Insomnia",
-    package: "insomnia",
-    type: "cask",
-    category: "Development Tools",
-    description: "API client and design platform",
-  },
-  {
-    name: "OrbStack",
-    package: "orbstack",
-    type: "cask",
-    category: "Development Tools",
-    description: "Docker Desktop alternative for macOS",
   },
 
   // Casks - Misc
