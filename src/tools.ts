@@ -159,6 +159,13 @@ export const tools: Tool[] = [
 
   // Casks - Browsers
   {
+    name: "Arc",
+    package: "arc",
+    type: "cask",
+    category: "Browsers",
+    description: "Browser designed for productivity",
+  },
+  {
     name: "Firefox",
     package: "firefox",
     type: "cask",
