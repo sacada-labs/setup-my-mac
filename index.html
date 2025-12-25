@@ -800,9 +800,9 @@
             *,
             *::before,
             *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms;
+                animation-iteration-count: 1;
+                transition-duration: 0.01ms;
             }
             
             html {
@@ -1004,7 +1004,7 @@
                                 <span></span>
                             </div>
                             <span class="terminal-title">bash</span>
-                            <button class="terminal-copy" onclick="copyAllCommands(event)" aria-label="Copy command">
+                            <button class="terminal-copy" onclick="_copyAllCommands(event)" aria-label="Copy command">
                                 <svg class="terminal-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1103,7 +1103,7 @@
         yearElement.setAttribute('datetime', currentYear.toString());
         
         // Image loading handlers with error handling
-        function handleImageLoad(img) {
+        function _handleImageLoad(img) {
             img.classList.add('loaded');
             const container = img.closest('.image-container');
             if (container) {
@@ -1111,7 +1111,7 @@
             }
         }
         
-        function handleImageError(img) {
+        function _handleImageError(img) {
             console.error('Failed to load image:', img.src);
             const container = img.closest('.image-container');
             if (container) {
@@ -1121,7 +1121,7 @@
         }
         
         // Copy to clipboard functionality with improved error handling and accessibility
-        function copyAllCommands(event) {
+        function _copyAllCommands(event) {
             // Use event parameter to find the button
             const btn = event?.target?.closest('.terminal-copy') || event?.target?.closest('.copy-btn') || document.querySelector('.terminal-copy');
             if (!btn) return;
@@ -1129,7 +1129,7 @@
             const command = `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sacada-labs/setup-my-mac/refs/heads/main/run.sh)"`;
             
             // Check if clipboard API is available
-            if (navigator.clipboard && navigator.clipboard.writeText) {
+            if (navigator.clipboard?.writeText) {
                 navigator.clipboard.writeText(command).then(() => {
                     showCopySuccess(btn);
                 }).catch(err => {
@@ -1270,8 +1270,8 @@
                 const rect = element.getBoundingClientRect();
                 
                 // Position above the icon, centered horizontally
-                tip.style.left = (rect.left + rect.width / 2) + 'px';
-                tip.style.top = (rect.top - 8) + 'px';
+                tip.style.left = `${rect.left + rect.width / 2}px`;
+                tip.style.top = `${rect.top - 8}px`;
                 
                 // Force reflow to get actual dimensions
                 tip.style.visibility = 'hidden';
@@ -1280,7 +1280,7 @@
                 tip.style.visibility = 'visible';
                 
                 // Adjust position to account for tooltip height
-                tip.style.top = (rect.top - tipRect.height - 8) + 'px';
+                tip.style.top = `${rect.top - tipRect.height - 8}px`;
             }
             
             function hideTooltip() {
@@ -1302,11 +1302,11 @@
                 });
                 
                 icon.addEventListener('mousemove', (e) => {
-                    if (tooltip && tooltip.classList.contains('visible')) {
+                    if (tooltip?.classList.contains('visible')) {
                         const rect = e.currentTarget.getBoundingClientRect();
                         const tipRect = tooltip.getBoundingClientRect();
-                        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
-                        tooltip.style.top = (rect.top - tipRect.height - 8) + 'px';
+                        tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                        tooltip.style.top = `${rect.top - tipRect.height - 8}px`;
                     }
                 });
             });
