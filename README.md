@@ -1,3 +1,5 @@
+![Logo](favicon.svg)
+
 # Setup My Mac
 
 Setup My Mac is an idempotent, terminal-based interactive tool that simplifies the installation and management of development tools on macOS. It provides a user-friendly interface to browse, select, and install various development tools (formulae and casks) through Homebrew. The tool automatically checks for existing installations, allows you to navigate through categorized tool lists, and handles both installation and uninstallation of selected packages. It can be run multiple times without side effects since it detects already-installed tools.
