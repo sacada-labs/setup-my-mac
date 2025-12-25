@@ -26,20 +26,11 @@ jobs:
       - name: Build executable
         run: bun run build
       
-      - name: Generate release tag
-        id: tag
-        run: |
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          TAG="v${TIMESTAMP}-${SHORT_SHA}"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "Generated tag: $TAG"
-      
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          name: Release ${{ steps.tag.outputs.tag }}
+          tag_name: latest
+          name: Latest Release
           body: |
             Automated release created from commit ${{ github.sha }}
             
