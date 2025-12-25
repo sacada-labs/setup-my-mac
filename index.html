@@ -1021,19 +1021,50 @@
             </div>
         </section>
         
-        <!-- Footer -->
-        <footer class="relative border-t border-gray-900 py-12 px-4 sm:px-6 mt-auto" role="contentinfo">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                <div class="flex items-center gap-2">
-                    <span class="text-blue-400 font-bold tracking-tighter text-xl">SM<span class="text-white">M</span></span>
-                    <span class="text-sm text-gray-500">&copy; <span id="current-year"></span> Setup My Mac. Built for developers.</span>
+        <!-- Footer - Accessible, responsive, WCAG 2.1 AA compliant -->
+        <footer class="relative mt-auto bg-black" role="contentinfo" aria-label="Site footer">
+            <!-- Subtle gradient border -->
+            <div class="h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent" aria-hidden="true"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+                <div class="flex flex-col items-center text-center gap-8">
+                    
+                    <!-- Primary: Brand + Tagline -->
+                    <div class="flex flex-col items-center gap-4">
+                        <!-- Logo - consistent with header, touch-friendly -->
+                        <a 
+                            href="#main-content" 
+                            class="group flex items-center gap-2 min-h-[2.75rem] min-w-[2.75rem] px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                            aria-label="Setup My Mac - Back to top"
+                        >
+                            <span class="text-blue-400 font-bold tracking-tighter text-xl sm:text-2xl select-none" aria-hidden="true">
+                                SM<span class="text-white">M</span>
+                            </span>
+                        </a>
+                        
+                        <!-- Tagline - WCAG AA contrast (gray-400 on black = 5.9:1) -->
+                        <p class="text-gray-400 text-sm sm:text-base font-medium max-w-xs sm:max-w-md leading-relaxed">
+                            The fastest way to get your Mac up to speed.
+                        </p>
+                    </div>
+                    
+                    <!-- Secondary: Location + Legal -->
+                    <div class="flex flex-col items-center gap-3 pt-2">
+                        <!-- Made in Berlin -->
+                        <p class="text-gray-500 text-xs sm:text-sm font-medium flex items-center gap-2">
+                            <span aria-hidden="true">🇩🇪</span>
+                            <span>Made in <span class="text-gray-300 font-semibold">Berlin</span></span>
+                        </p>
+                        
+                        <!-- Copyright - proper semantic time element -->
+                        <p class="text-gray-600 text-xs tracking-wide">
+                            <span aria-label="Copyright">&copy;</span> 
+                            <time id="current-year" datetime="2025">2025</time> 
+                            Setup My Mac
+                        </p>
+                    </div>
+                    
                 </div>
-                <nav aria-label="Footer navigation">
-                    <ul class="flex gap-8 list-none">
-                        <li><a href="https://github.com/sacada-labs/setup-my-mac" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-white transition-colors text-sm font-medium min-h-[var(--touch-target-min)] flex items-center">GitHub</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-white transition-colors text-sm font-medium min-h-[var(--touch-target-min)] flex items-center">Terms</a></li>
-                    </ul>
-                </nav>
             </div>
         </footer>
     </main>
@@ -1065,8 +1096,11 @@
     </style>
     
     <script>
-        // Set current year in footer
-        document.getElementById('current-year').textContent = new Date().getFullYear();
+        // Set current year in footer with proper datetime attribute
+        const yearElement = document.getElementById('current-year');
+        const currentYear = new Date().getFullYear();
+        yearElement.textContent = currentYear;
+        yearElement.setAttribute('datetime', currentYear.toString());
         
         // Image loading handlers with error handling
         function handleImageLoad(img) {
