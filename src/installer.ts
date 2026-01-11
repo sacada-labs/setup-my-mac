@@ -1,6 +1,6 @@
-import type { Tool } from "./tools";
 import kleur from "kleur";
 import ora from "ora";
+import type { Tool } from "./tools";
 
 export interface InstallationResult {
 	tool: Tool;

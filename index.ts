@@ -1,22 +1,22 @@
 #!/usr/bin/env bun
 
+import { stdin } from "node:process";
 import inquirer from "inquirer";
 import kleur from "kleur";
-import { type Tool, getAllCategories, getToolsByCategory } from "./src/tools";
 import {
-	ensureHomebrew,
-	isHomebrewInstalled,
 	checkHomebrewVersion,
+	ensureHomebrew,
 	getInstalledPackages,
+	isHomebrewInstalled,
 } from "./src/brew";
+import type { InstallationResult } from "./src/installer";
 import {
 	installTools,
 	printInstallationSummary,
-	uninstallTools,
 	printUninstallationSummary,
+	uninstallTools,
 } from "./src/installer";
-import type { InstallationResult } from "./src/installer";
-import { stdin } from "node:process";
+import { getAllCategories, getToolsByCategory, type Tool } from "./src/tools";
 
 function clearScreen(): void {
 	// ANSI escape codes: \x1b[2J clears screen, \x1b[H moves cursor to top-left
