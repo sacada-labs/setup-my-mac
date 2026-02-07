@@ -324,35 +324,41 @@ export async function uninstallTools(
 	return results;
 }
 
-export function printInstallationSummary(results: InstallationResult[]): void {
+export function formatTypeLabel(tool: Tool): string {
+	return tool.type === "cask"
+		? kleur.yellow("[cask]")
+		: kleur.blue("[formula]");
+}
+
+function printSummary(
+	action: "install" | "uninstall",
+	results: InstallationResult[],
+): void {
 	const successful = results.filter((r) => r.success);
 	const failed = results.filter((r) => !r.success);
+	const pastTense = action === "install" ? "installed" : "uninstalled";
+	const title =
+		action === "install" ? "Installation Summary" : "Uninstallation Summary";
 
 	console.log(`\n${kleur.bold("=".repeat(50))}`);
-	console.log(kleur.bold("Installation Summary"));
+	console.log(kleur.bold(title));
 	console.log(kleur.bold("=".repeat(50)));
 
 	if (successful.length > 0) {
 		console.log(
-			kleur.green(`\n✓ Successfully installed (${successful.length}):`),
+			kleur.green(`\n✓ Successfully ${pastTense} (${successful.length}):`),
 		);
 		for (const result of successful) {
-			const typeLabel =
-				result.tool.type === "cask"
-					? kleur.yellow("[cask]")
-					: kleur.blue("[formula]");
-			console.log(`  ${typeLabel} ${result.tool.name}`);
+			console.log(`  ${formatTypeLabel(result.tool)} ${result.tool.name}`);
 		}
 	}
 
 	if (failed.length > 0) {
-		console.log(kleur.red(`\n✗ Failed to install (${failed.length}):`));
+		console.log(
+			kleur.red(`\n✗ Failed to ${action} (${failed.length}):`),
+		);
 		for (const result of failed) {
-			const typeLabel =
-				result.tool.type === "cask"
-					? kleur.yellow("[cask]")
-					: kleur.blue("[formula]");
-			console.log(`  ${typeLabel} ${result.tool.name}`);
+			console.log(`  ${formatTypeLabel(result.tool)} ${result.tool.name}`);
 			if (result.error) {
 				console.log(kleur.gray(`    Error: ${result.error}`));
 			}
@@ -362,42 +368,12 @@ export function printInstallationSummary(results: InstallationResult[]): void {
 	console.log(`\n${kleur.bold("=".repeat(50))}\n`);
 }
 
+export function printInstallationSummary(results: InstallationResult[]): void {
+	printSummary("install", results);
+}
+
 export function printUninstallationSummary(
 	results: InstallationResult[],
 ): void {
-	const successful = results.filter((r) => r.success);
-	const failed = results.filter((r) => !r.success);
-
-	console.log(`\n${kleur.bold("=".repeat(50))}`);
-	console.log(kleur.bold("Uninstallation Summary"));
-	console.log(kleur.bold("=".repeat(50)));
-
-	if (successful.length > 0) {
-		console.log(
-			kleur.green(`\n✓ Successfully uninstalled (${successful.length}):`),
-		);
-		for (const result of successful) {
-			const typeLabel =
-				result.tool.type === "cask"
-					? kleur.yellow("[cask]")
-					: kleur.blue("[formula]");
-			console.log(`  ${typeLabel} ${result.tool.name}`);
-		}
-	}
-
-	if (failed.length > 0) {
-		console.log(kleur.red(`\n✗ Failed to uninstall (${failed.length}):`));
-		for (const result of failed) {
-			const typeLabel =
-				result.tool.type === "cask"
-					? kleur.yellow("[cask]")
-					: kleur.blue("[formula]");
-			console.log(`  ${typeLabel} ${result.tool.name}`);
-			if (result.error) {
-				console.log(kleur.gray(`    Error: ${result.error}`));
-			}
-		}
-	}
-
-	console.log(`\n${kleur.bold("=".repeat(50))}\n`);
+	printSummary("uninstall", results);
 }

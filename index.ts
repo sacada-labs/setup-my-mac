@@ -11,6 +11,7 @@ import {
 } from "./src/brew";
 import type { InstallationResult } from "./src/installer";
 import {
+	formatTypeLabel,
 	installTools,
 	printInstallationSummary,
 	printUninstallationSummary,
@@ -191,8 +192,6 @@ async function main() {
 		const previousSelectedValues = previousSelections.map((t) => t.package);
 
 		const toolChoices = categoryTools.map((tool) => {
-			const typeLabel =
-				tool.type === "cask" ? kleur.yellow("[cask]") : kleur.blue("[formula]");
 			const description = tool.description
 				? kleur.dim(` - ${tool.description}`)
 				: "";
@@ -210,7 +209,7 @@ async function main() {
 				previousSelectedValues.includes(tool.package) || isInstalled;
 
 			return {
-				name: `${typeLabel} ${tool.name}${installedMark}${description}`,
+				name: `${formatTypeLabel(tool)} ${tool.name}${installedMark}${description}`,
 				value: tool,
 				checked: shouldBeChecked,
 			};
@@ -334,10 +333,8 @@ async function main() {
 	if (toolsToUninstall.length > 0) {
 		console.log(kleur.red(`\n⚠ To uninstall (${toolsToUninstall.length}):\n`));
 		for (const tool of toolsToUninstall) {
-			const typeLabel =
-				tool.type === "cask" ? kleur.yellow("[cask]") : kleur.blue("[formula]");
 			console.log(
-				`  ${typeLabel} ${tool.name} ${kleur.gray(`(${tool.category})`)}`,
+				`  ${formatTypeLabel(tool)} ${tool.name} ${kleur.gray(`(${tool.category})`)}`,
 			);
 		}
 	}
@@ -347,10 +344,8 @@ async function main() {
 			kleur.green(`\n✓ Already installed (${alreadyInstalled.length}):\n`),
 		);
 		for (const tool of alreadyInstalled) {
-			const typeLabel =
-				tool.type === "cask" ? kleur.yellow("[cask]") : kleur.blue("[formula]");
 			console.log(
-				`  ${typeLabel} ${tool.name} ${kleur.gray(`(${tool.category})`)}`,
+				`  ${formatTypeLabel(tool)} ${tool.name} ${kleur.gray(`(${tool.category})`)}`,
 			);
 		}
 	}
@@ -358,10 +353,8 @@ async function main() {
 	if (toolsToInstall.length > 0) {
 		console.log(kleur.bold(`\nTo install (${toolsToInstall.length}):\n`));
 		for (const tool of toolsToInstall) {
-			const typeLabel =
-				tool.type === "cask" ? kleur.yellow("[cask]") : kleur.blue("[formula]");
 			console.log(
-				`  ${typeLabel} ${tool.name} ${kleur.gray(`(${tool.category})`)}`,
+				`  ${formatTypeLabel(tool)} ${tool.name} ${kleur.gray(`(${tool.category})`)}`,
 			);
 		}
 	}
