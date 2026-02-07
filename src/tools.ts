@@ -32,6 +32,13 @@ const tools: Tool[] = [
 		description: "Go version manager",
 	},
 	{
+		name: "GitHub CLI",
+		package: "gh",
+		type: "formula",
+		category: "Development",
+		description: "GitHub's official command line tool",
+	},
+	{
 		name: "Insomnia",
 		package: "insomnia",
 		type: "cask",
