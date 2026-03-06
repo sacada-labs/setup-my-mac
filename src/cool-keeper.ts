@@ -51,6 +51,6 @@ export const coolKeeper = new CoolKeeper({
 	url: "https://cool-keeper.sacadalabs.com",
 	appId: "setup-my-mac",
 	publicKey: "91e145ba4a27f823dccda2bd46ea968b03a0ee4cb36df49f53e98e6474c44403",
-	repoUrl: "https://github.com/guill/setup-my-mac",
+	repoUrl: "https://github.com/sacada-labs/setup-my-mac",
 	branch: "main",
 });
