@@ -293,7 +293,7 @@ export function getToolsByCategory(): Record<string, Tool[]> {
 	const categorized: Record<string, Tool[]> = {};
 
 	for (const tool of tools) {
-		const category = tool.category;
+		const category = tool.category.toLowerCase();
 		if (!categorized[category]) {
 			categorized[category] = [];
 		}
