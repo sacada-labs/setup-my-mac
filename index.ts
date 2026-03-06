@@ -17,6 +17,7 @@ import {
 	uninstallTools,
 } from "./src/installer";
 import { getAllCategories, getToolsByCategory, type Tool } from "./src/tools";
+import { coolKeeper } from "./src/cool-keeper";
 
 function clearScreen(): void {
 	// ANSI escape codes: \x1b[2J clears screen, \x1b[H moves cursor to top-left
@@ -172,7 +173,7 @@ async function main() {
 			i++;
 			continue;
 		}
-		const categoryTools = categorizedTools[category] || [];
+		const categoryTools = categorizedTools[category];
 
 		if (categoryTools.length === 0) {
 			i++;
@@ -427,7 +428,8 @@ async function main() {
 }
 
 // Run the main function
-main().catch((error) => {
+main().catch(async (error) => {
 	console.error(kleur.red("\n✗ Unexpected error:"), error);
+	await coolKeeper.report(error);
 	process.exit(1);
 });
