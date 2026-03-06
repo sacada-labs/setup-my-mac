@@ -175,7 +175,7 @@ async function main() {
 		}
 		const categoryTools = categorizedTools[category];
 
-		if (categoryTools.length === 0) {
+		if (!categoryTools || categoryTools.length === 0) {
 			i++;
 			continue;
 		}
