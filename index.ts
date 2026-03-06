@@ -9,6 +9,7 @@ import {
 	getInstalledPackages,
 	isHomebrewInstalled,
 } from "./src/brew";
+import { coolKeeper } from "./src/cool-keeper";
 import type { InstallationResult } from "./src/installer";
 import {
 	installTools,
@@ -17,7 +18,6 @@ import {
 	uninstallTools,
 } from "./src/installer";
 import { getAllCategories, getToolsByCategory, type Tool } from "./src/tools";
-import { coolKeeper } from "./src/cool-keeper";
 
 function clearScreen(): void {
 	// ANSI escape codes: \x1b[2J clears screen, \x1b[H moves cursor to top-left
