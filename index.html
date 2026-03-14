@@ -850,7 +850,7 @@
                     <div class="space-y-6 max-w-4xl">
                         <div class="flex items-center justify-center gap-3 mb-8">
                             <span class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-2 rounded-full text-xs font-semibold">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <path d="M18 6L6 18M6 6l12 12"/>
                                 </svg>
                                 <span>No Apple Account Required</span>
@@ -1004,8 +1004,8 @@
                                 <span></span>
                             </div>
                             <span class="terminal-title">bash</span>
-                            <button class="terminal-copy" onclick="_copyAllCommands(event)" aria-label="Copy command">
-                                <svg class="terminal-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <button type="button" class="terminal-copy" onclick="_copyAllCommands(event)" aria-label="Copy command">
+                                <svg class="terminal-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                                 </svg>
