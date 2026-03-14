@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { stdin } from "node:process";
+import { ExitPromptError } from "@inquirer/core";
 import inquirer from "inquirer";
 import kleur from "kleur";
 import {
@@ -429,6 +430,9 @@ async function main() {
 
 // Run the main function
 main().catch(async (error) => {
+	if (error instanceof ExitPromptError) {
+		process.exit(0);
+	}
 	console.error(kleur.red("\n✗ Unexpected error:"), error);
 	await coolKeeper.report(error);
 	process.exit(1);

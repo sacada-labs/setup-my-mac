@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { $ } from "bun";
 
 export async function isHomebrewInstalled(): Promise<boolean> {
@@ -138,16 +139,44 @@ export async function getInstalledFormulas(): Promise<Set<string>> {
 }
 
 /**
- * Get a Set of all installed Homebrew casks
+ * Get a Set of all installed Homebrew casks.
+ * Verifies that the cask's .app artifact actually exists on disk,
+ * since manually deleting an app from /Applications leaves a stale
+ * Homebrew record.
  */
 export async function getInstalledCasks(): Promise<Set<string>> {
 	try {
-		const result = await $`brew list --cask`.quiet().text();
-		const casks = result
-			.split("\n")
-			.map((line) => line.trim())
-			.filter((line) => line.length > 0);
-		return new Set(casks);
+		const info = await $`brew info --cask --json=v2 --installed`.quiet().text();
+		const parsed = JSON.parse(info);
+		const caskList: Array<{
+			token: string;
+			artifacts: Array<Record<string, string[]>>;
+		}> = parsed.casks ?? [];
+
+		const verified = new Set<string>();
+		for (const cask of caskList) {
+			const artifacts = cask.artifacts ?? [];
+			let hasAppArtifact = false;
+			let appFoundOnDisk = false;
+
+			for (const artifact of artifacts) {
+				if (artifact.app) {
+					hasAppArtifact = true;
+					for (const app of artifact.app) {
+						if (existsSync(`/Applications/${app}`)) {
+							appFoundOnDisk = true;
+							break;
+						}
+					}
+					if (appFoundOnDisk) break;
+				}
+			}
+
+			if (!hasAppArtifact || appFoundOnDisk) {
+				verified.add(cask.token);
+			}
+		}
+		return verified;
 	} catch {
 		return new Set();
 	}
